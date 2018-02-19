@@ -2,11 +2,13 @@ package com.gianni.model.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,6 +39,9 @@ public class Recensione implements Serializable {
 	private int conto;
 
 	private String note;
+	
+	@OneToMany(mappedBy = "recensione")
+	private List<Immagine> immagini;
 
 	public int getIdRecensione() {
 		return idRecensione;

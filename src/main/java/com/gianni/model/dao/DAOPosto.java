@@ -16,6 +16,9 @@ public class DAOPosto {
 	private static final String QUERY_GET_ALL_POSTI_BY_CITTA = "SELECT P FROM Posti P where P.cittaPosto LIKE :citta";
 	private static final String QUERY_GET_ALL_POSTI_BY_POSTO = "SELECT P FROM Posti P where P.nomePosto LIKE :posto";
 
+	private static final String POSTO = "POSTO";
+	private static final String CITTA = "CITTA";
+
 	public static List<Posti> getAllPosti() {
 		EntityManager em = DBManager.getInstance().getEntityManager();
 		TypedQuery<Posti> queryRecuperoPosti = em.createQuery(QUERY_GET_ALL_POSTI, Posti.class);
@@ -24,7 +27,7 @@ public class DAOPosto {
 		return posti;
 	}
 
-	public static List<Posti> getAllPostiByCitta(String citta) {
+	private static List<Posti> getAllPostiByCitta(String citta) {
 		EntityManager em = DBManager.getInstance().getEntityManager();
 		TypedQuery<Posti> queryRecuperoPosti = em.createQuery(QUERY_GET_ALL_POSTI_BY_CITTA, Posti.class);
 		queryRecuperoPosti.setParameter(1, citta);
@@ -33,7 +36,7 @@ public class DAOPosto {
 		return posti;
 	}
 
-	public static List<Posti> getAllPostiByPosto(String posto) {
+	private static List<Posti> getAllPostiByPosto(String posto) {
 		EntityManager em = DBManager.getInstance().getEntityManager();
 		TypedQuery<Posti> queryRecuperoPosti = em.createQuery(QUERY_GET_ALL_POSTI_BY_POSTO, Posti.class);
 		queryRecuperoPosti.setParameter(1, posto);
@@ -41,26 +44,70 @@ public class DAOPosto {
 		em.close();
 		return posti;
 	}
-	
-	public boolean inserisciNuovoPosto(Posti p) {
+
+	public static List<Posti> getAllPostiFiltered(String tipologia, String query) {
+		List<Posti> posti = null;
+		if (null != tipologia && !tipologia.trim().isEmpty()) {
+			switch (tipologia.toUpperCase()) {
+			case POSTO:
+				posti = DAOPosto.getAllPostiByPosto(query);
+				break;
+			default:
+				posti = DAOPosto.getAllPostiByCitta(query);
+				break;
+			}
+
+		}
+
+		return posti;
+	}
+
+	public static boolean inserisciNuovoPosto(Posti p) {
 		boolean esito = false;
 		EntityManager em = DBManager.getInstance().getEntityManager();
 
 		try {
-			if(!em.getTransaction().isActive()) {
+			if (!em.getTransaction().isActive()) {
 				em.getTransaction().begin();
 			}
-			
+
 			em.persist(p);
 			em.getTransaction().commit();
 			esito = true;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			log.severe(e.getMessage());
 			em.getTransaction().rollback();
 		} finally {
 			em.close();
 		}
-		
+
+		return esito;
+	}
+
+	public static boolean aggiornaFoto(int idPosto, byte[] foto) {
+		boolean esito = false;
+		EntityManager em = DBManager.getInstance().getEntityManager();
+		Posti posto = em.find(Posti.class, idPosto);
+		try {
+			if (!em.getTransaction().isActive()) {
+				em.getTransaction().begin();
+			}
+			if (null != posto) {
+				posto.setImmagineCopertina(foto);
+
+				em.merge(posto);
+				em.getTransaction().commit();
+				esito = true;
+			}
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			if (null != em.getTransaction() && em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+		} finally {
+			em.close();
+		}
+
 		return esito;
 	}
 }

@@ -6,11 +6,13 @@
 	<persistence-unit name="MyAdvisorUnit"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<non-jta-data-source>java:comp/env/jdbc/gigiadvisor</non-jta-data-source>
-		<class>com.gianni.model.entity.Utente</class>
-		<class>com.gianni.model.entity.Posti</class>
+		<non-jta-data-source>java:comp/env/jdbc/gigiadvisor
+		</non-jta-data-source>
 		<class>com.gianni.model.entity.Immagine</class>
+		<class>com.gianni.model.entity.Posti</class>
 		<class>com.gianni.model.entity.Recensione</class>
-
+		<class>com.gianni.model.entity.Utente</class>
+		<property name="eclipselink.logging.level.sql" value="FINE" />
+		<property name="eclipselink.logging.parameters" value="true" />
 	</persistence-unit>
 </persistence>
