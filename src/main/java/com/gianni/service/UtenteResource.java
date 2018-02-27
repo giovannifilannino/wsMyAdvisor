@@ -11,6 +11,11 @@ import com.gianni.model.dao.DAOUtente;
 import com.gianni.service.model.UtenteLoginRequest;
 import com.gianni.service.model.UtenteLoginResponse;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api
 @Path("/utente")
 public class UtenteResource {
 
@@ -18,7 +23,8 @@ public class UtenteResource {
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response login(UtenteLoginRequest request) {
+	@ApiOperation(value = "Login dell'utente", response = UtenteLoginResponse.class)
+	public Response login(@ApiParam(value = "Dati per il login dell'utente") UtenteLoginRequest request) {
 		int id = DAOUtente.login(request.getUsername(), request.getPassword());
 		UtenteLoginResponse response = new UtenteLoginResponse();
 		response.setId(id);

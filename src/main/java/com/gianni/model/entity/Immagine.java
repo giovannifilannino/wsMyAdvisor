@@ -1,5 +1,6 @@
 package com.gianni.model.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,23 +9,30 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Immagine")
+@Table(name = "immagini")
 public class Immagine {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id_immagine")
 	private int idImmagine;
 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_recensione")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_recensione")
 	private Recensione recensione;
+
+	@OneToOne
+	@JoinColumn(name = "id_utente")
+	private Utente utente;
 
 	@Lob
 	private byte[] foto;
 
+	@Column(name="formato_immagine")
 	private String formatoImmagine;
 
 	public int getIdImmagine() {
@@ -57,6 +65,14 @@ public class Immagine {
 
 	public void setFormatoImmagine(String formatoImmagine) {
 		this.formatoImmagine = formatoImmagine;
+	}
+
+	public Utente getUtente() {
+		return utente;
+	}
+
+	public void setUtente(Utente utente) {
+		this.utente = utente;
 	}
 
 }

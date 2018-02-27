@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "utenti")
 public class Utente implements Serializable{
@@ -25,6 +27,7 @@ public class Utente implements Serializable{
 
 	private String username;
 
+	@JsonIgnore
 	private String password;
 
 	public int getId() {
