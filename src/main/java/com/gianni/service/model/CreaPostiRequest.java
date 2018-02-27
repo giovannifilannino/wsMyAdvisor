@@ -1,32 +1,22 @@
-package com.gianni.model.entity;
+package com.gianni.service.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import java.io.Serializable;
 
-@Entity
-@Table(name = "posti")
-public class Posti {
+import io.swagger.annotations.ApiModel;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id_posto")
+@ApiModel("Oggetto per la creazione di un nuovo posto")
+public class CreaPostiRequest implements Serializable {
+
+	private static final long serialVersionUID = 3150936541132036946L;
+
 	private int idPosto;
 
-	@Column(name = "citta_posto")
 	private String cittaPosto;
 
-	@Column(name = "nome_posto")
 	private String nomePosto;
 
 	private String indirizzo;
 
-	@Lob
-	@Column(name = "immagine_copertina")
 	private byte[] immagineCopertina;
 
 	public int getIdPosto() {
