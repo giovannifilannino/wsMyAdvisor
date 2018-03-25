@@ -33,4 +33,12 @@ public class DAOUtente {
 		return id;
 
 	}
+
+	public static Utente recuperaUtente(int idUtente) {
+		EntityManager em = DBManager.getInstance().getEntityManager();
+		Utente u = new Utente();
+		u = em.find(Utente.class, idUtente);
+		em.close();
+		return u;
+	}
 }

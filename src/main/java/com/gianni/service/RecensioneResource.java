@@ -21,7 +21,10 @@ import com.gianni.model.dao.DAOImmagini;
 import com.gianni.model.dao.DAORecensione;
 import com.gianni.model.entity.Immagine;
 import com.gianni.model.entity.Recensione;
+import com.gianni.service.mapper.RecensioneMapper;
+import com.gianni.service.model.CreaRecensione;
 import com.gianni.service.model.GenericBooleanResponse;
+import com.gianni.service.model.RecensioniResponse;
 import com.gianni.service.utility.Utility;
 
 import io.swagger.annotations.Api;
@@ -40,8 +43,9 @@ public class RecensioneResource {
 	public Response inserisciRecensione(
 			@ApiParam(value = "id del posto a cui fare la recensione") @PathParam("idPosto") int idPosto,
 			@ApiParam(value = "id dell'utente creatore della recensione") @PathParam("idUtente") int idUtente,
-			@ApiParam(value = "Recensione scritta in vari punti") Recensione r) {
-		boolean esito = DAORecensione.inserisciRecensione(idUtente, idPosto, r);
+			@ApiParam(value = "Recensione scritta in vari punti") CreaRecensione r) {
+		Recensione recensione = RecensioneMapper.INSTANCE.mapRecensioneFromCreaRecensione(r);
+		boolean esito = DAORecensione.inserisciRecensione(idUtente, idPosto, recensione);
 		GenericBooleanResponse response = new GenericBooleanResponse(esito);
 		if (esito) {
 			return Response.ok(response).build();
@@ -52,15 +56,17 @@ public class RecensioneResource {
 	@GET
 	@Path("/recensioni/{idPosto}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Recupera tutte le recensioni", response = Recensione.class, responseContainer = "List")
+	@ApiOperation(value = "Recupera tutte le recensioni", response = RecensioniResponse.class, responseContainer = "List")
 	public Response getAllRecensioni(
 			@ApiParam(value = "id del posto da cui recuperare le recensioni") @PathParam("idPosto") int idPosto) {
+
 		List<Recensione> recensioni = DAORecensione.getAllRecensioni(idPosto);
+		List<RecensioniResponse> recensioniMapped = RecensioneMapper.INSTANCE.mapRecensioni(recensioni);
 		if (null == recensioni) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 
-		return Response.ok(recensioni).build();
+		return Response.ok(recensioniMapped).build();
 	}
 
 	@GET
@@ -84,22 +90,26 @@ public class RecensioneResource {
 	public Response uploadImmagine(@PathParam("idRecensione") int idRecensione, @PathParam("idUtente") int idUtente,
 			@ApiParam("immagine da caricare") @FormDataParam("file") InputStream uploadedInputStream,
 			@ApiParam("dettagli immagine da caricare") @FormDataParam("file") FormDataContentDisposition fileDetails) {
-		byte[] foto = Utility.getByteArrayFromInputStream(uploadedInputStream);
+
 		boolean esito = false;
 		GenericBooleanResponse response = new GenericBooleanResponse();
-		if (null != foto) {
-			Immagine i = new Immagine();
-			i.setFoto(foto);
-			i.setFormatoImmagine(fileDetails.getType());
-			esito = DAOImmagini.inserisciImmagine(idUtente, idRecensione, i);
-		} else {
-			response.setEsito(esito);
-			return Response.status(Status.BAD_REQUEST).entity(response).build();
+		
+		
+		String nomeFile = fileDetails.getFileName();
+		
+		String location = Utility.uploadImmagine(nomeFile, "images", uploadedInputStream);
 
+		esito = location  != null;
+		
+		if(esito) {
+			Immagine i = new Immagine();
+			i.setFoto(location);
+			DAOImmagini.inserisciImmagine(idUtente, idRecensione, i);
 		}
 
 		response.setEsito(esito);
 
 		return Response.ok(response).build();
 	}
+
 }

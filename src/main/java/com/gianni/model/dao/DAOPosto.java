@@ -19,6 +19,14 @@ public class DAOPosto {
 	private static final String POSTO = "POSTO";
 	private static final String CITTA = "CITTA";
 
+	public static Posti getPosto(int idPosto) {
+		EntityManager em = DBManager.getInstance().getEntityManager();
+		Posti p = new Posti();
+		p = em.find(Posti.class, idPosto);
+		em.close();
+		return p;
+	}
+
 	public static List<Posti> getAllPosti() {
 		EntityManager em = DBManager.getInstance().getEntityManager();
 		TypedQuery<Posti> queryRecuperoPosti = em.createQuery(QUERY_GET_ALL_POSTI, Posti.class);
@@ -52,7 +60,7 @@ public class DAOPosto {
 			case POSTO:
 				posti = DAOPosto.getAllPostiByPosto(query);
 				break;
-			default:
+			case CITTA:
 				posti = DAOPosto.getAllPostiByCitta(query);
 				break;
 			}
@@ -62,18 +70,21 @@ public class DAOPosto {
 		return posti;
 	}
 
-	public static boolean inserisciNuovoPosto(Posti p) {
-		boolean esito = false;
+	public static int inserisciNuovoPosto(Posti p) {
+		int id = 0;
 		EntityManager em = DBManager.getInstance().getEntityManager();
 
 		try {
 			if (!em.getTransaction().isActive()) {
 				em.getTransaction().begin();
 			}
-
+			id = p.getIdPosto();
 			em.persist(p);
+			if (0 == id) {
+				em.flush();
+				id = p.getIdPosto();
+			}
 			em.getTransaction().commit();
-			esito = true;
 		} catch (Exception e) {
 			log.severe(e.getMessage());
 			em.getTransaction().rollback();
@@ -81,10 +92,10 @@ public class DAOPosto {
 			em.close();
 		}
 
-		return esito;
+		return id;
 	}
 
-	public static boolean aggiornaFoto(int idPosto, byte[] foto) {
+	public static boolean aggiornaFoto(int idPosto, String foto) {
 		boolean esito = false;
 		EntityManager em = DBManager.getInstance().getEntityManager();
 		Posti posto = em.find(Posti.class, idPosto);

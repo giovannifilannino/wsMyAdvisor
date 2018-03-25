@@ -7,10 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "immagini")
@@ -18,21 +19,22 @@ public class Immagine {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_immagine")
+	@Column(name = "id_immagine")
 	private int idImmagine;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_recensione")
 	private Recensione recensione;
 
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "id_utente")
 	private Utente utente;
 
-	@Lob
-	private byte[] foto;
+	private String foto;
 
-	@Column(name="formato_immagine")
+	@Column(name = "formato_immagine")
 	private String formatoImmagine;
 
 	public int getIdImmagine() {
@@ -51,11 +53,11 @@ public class Immagine {
 		this.recensione = recensione;
 	}
 
-	public byte[] getFoto() {
+	public String getFoto() {
 		return foto;
 	}
 
-	public void setFoto(byte[] foto) {
+	public void setFoto(String foto) {
 		this.foto = foto;
 	}
 

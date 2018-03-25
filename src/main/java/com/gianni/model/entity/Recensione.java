@@ -128,4 +128,12 @@ public class Recensione implements Serializable {
 		this.note = note;
 	}
 
+	public List<Immagine> getImmagini() {
+		return immagini;
+	}
+
+	public void setImmagini(List<Immagine> immagini) {
+		this.immagini = immagini;
+	}
+
 }

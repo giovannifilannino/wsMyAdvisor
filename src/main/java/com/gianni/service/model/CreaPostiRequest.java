@@ -17,7 +17,7 @@ public class CreaPostiRequest implements Serializable {
 
 	private String indirizzo;
 
-	private byte[] immagineCopertina;
+	private String immagineCopertina;
 
 	public int getIdPosto() {
 		return idPosto;
@@ -51,11 +51,11 @@ public class CreaPostiRequest implements Serializable {
 		this.indirizzo = indirizzo;
 	}
 
-	public byte[] getImmagineCopertina() {
+	public String getImmagineCopertina() {
 		return immagineCopertina;
 	}
 
-	public void setImmagineCopertina(byte[] immagineCopertina) {
+	public void setImmagineCopertina(String immagineCopertina) {
 		this.immagineCopertina = immagineCopertina;
 	}
 

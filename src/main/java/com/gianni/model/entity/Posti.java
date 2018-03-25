@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class Posti {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_posto")
 	private int idPosto;
 
@@ -25,9 +25,8 @@ public class Posti {
 
 	private String indirizzo;
 
-	@Lob
 	@Column(name = "immagine_copertina")
-	private byte[] immagineCopertina;
+	private String immagineCopertina;
 
 	public int getIdPosto() {
 		return idPosto;
@@ -61,11 +60,11 @@ public class Posti {
 		this.indirizzo = indirizzo;
 	}
 
-	public byte[] getImmagineCopertina() {
+	public String getImmagineCopertina() {
 		return immagineCopertina;
 	}
 
-	public void setImmagineCopertina(byte[] immagineCopertina) {
+	public void setImmagineCopertina(String immagineCopertina) {
 		this.immagineCopertina = immagineCopertina;
 	}
 
